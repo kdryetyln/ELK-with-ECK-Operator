@@ -1,0 +1,38 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+spec:
+  version: 8.3.0
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+ 
+---
+ 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: kibana.20.76.198.255.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: kibana-kb-http
+            port:
+              number: 5601
+        path: /
+        pathType: Prefix
+  # tls:
+  # - hosts:
+  #   - host-name
+  #   secretName: tls-secret-name
